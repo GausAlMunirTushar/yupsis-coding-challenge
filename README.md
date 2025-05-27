@@ -2,7 +2,7 @@
 
 ## Table of Contents
 
-### Problem 1: Mojo and Mutki Exchange and Get more Mojo
+### Problem 1: Mojo and Mutki Exchange Calculation
 
 ##### Description:
 
@@ -12,6 +12,16 @@
 node mojoMutki.js
 ```
 
+### Problem 2: Inventory Management with Multiple Units
+
+##### Run:
+
+```bash
+node inventory.js
+```
+
+### Problem 3: Message Processing with Retry Logic (Random ID Validation)
+
 ### Submission:
 
 -   [GitHub Repo Link: ](https://github.com/gausalmunirtushar/yupsis-coding-challenge)
@@ -19,7 +29,7 @@ node mojoMutki.js
 -   Video Links:
     -   [x] Problem 1:
     -   [x] Problem 2:
-    -   [x] Problem 3:
+    -   [x] [Problem 3](https://youtu.be/FTGNV43vYB4) : https://youtu.be/FTGNV43vYB4
 
 ---
 
