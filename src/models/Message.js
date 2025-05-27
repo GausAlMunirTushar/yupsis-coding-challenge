@@ -6,6 +6,9 @@ const messageSchema = new Schema(
 			type: Number,
 			required: ["Transaction ID Required", true],
 		},
+		amount: {
+			type: Number,
+		},
 		status: {
 			type: String,
 			enum: ["pending", "success", "rejected"],

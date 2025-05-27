@@ -9,7 +9,11 @@ const messageProcessor = async () => {
 		const message = await Message.findOne({
 			$or: [
 				{ status: "pending" },
-				{ status: "rejected", nextAttemptAt: { $lte: currentTime } },
+				{
+					status: "rejected",
+					nextAttemptAt: { $lte: currentTime },
+					attemptCount: { $lt: 6 },
+				},
 			],
 		}).sort({
 			createdAt: 1,
@@ -20,7 +24,7 @@ const messageProcessor = async () => {
 		}
 		const randomNumber = Math.floor(Math.random() * 1000);
 		console.log(
-			`Processing Transaction ID ${message.trxId} and ${randomNumber} are Same`
+			`Processing Transaction ID ${message.trxId} vs ${randomNumber} `
 		);
 
 		if (message.trxId === randomNumber) {
@@ -33,30 +37,37 @@ const messageProcessor = async () => {
 
 			netfeeCustomerRecharge(message.trxId);
 		} else {
-			message.status = "rejected";
-			message.attemptCount += 1;
+			if (message.attemptCount + 1 > 6) {
+				message.status = "rejected";
+				message.nextAttemptAt = null;
+				console.log(
+					`Message ${message.trxId} reach max size of re try`
+				);
+			} else {
+				message.status = "rejected";
+				message.attemptCount += 1;
 
-			const delayNumber = Math.min(
-				message.attemptCount,
-				retryDelays.length - 1
-			);
+				const delayIndex = Math.min(
+					message.attemptCount - 1,
+					retryDelays.length - 1
+				);
+				const delayMinutes = retryDelays[delayIndex];
 
-			const delayMinutes = retryDelays[delayNumber];
-
-			message.nextAttemptAt = new Date(
-				Date.now() + delayMinutes * 60 * 1000
-			);
-			await message.save();
-			console.log(
-				`Message  ${message._id} rejected Retry After  ${delayMinutes} minutes`
-			);
+				message.nextAttemptAt = new Date(
+					Date.now() + delayMinutes * 60 * 1000
+				);
+				await message.save();
+				console.log(
+					`Message  ${message._id} rejected Retry After  ${delayMinutes} minutes`
+				);
+			}
 		}
 	} catch (error) {
 		console.log(error);
 	}
 };
 
-const netfeeCustomerRecharge = () => {
+const netfeeCustomerRecharge = (trxId) => {
 	console.log(`netfeeCustomerRecharge for trxId ${trxId}`);
 };
 
